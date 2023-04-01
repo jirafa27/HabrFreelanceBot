@@ -11,20 +11,16 @@ bot = telebot.TeleBot('5892722843:AAFtxA1hpDSD4MRgXB0Epf26bxGmv6zJcDE')
 
 
 
+def send_last_order():
 
-def start_bot():
-    url = 'https://freelance.habr.com/tasks?categories=development_backend,development_bots,development_scripts'
-
-    html_text = requests.get(url).text
-
-    # используем парсер lxml
-    soup = BeautifulSoup(html_text, 'lxml')
 
     con = sqlite3.connect('users.db')
     cur = con.cursor()
     users = cur.execute("SELECT * FROM users").fetchmany()
     while True:
         for user in users:
+            html_text = requests.get(user[1]).text
+            soup = BeautifulSoup(html_text, 'lxml')
             tasks = soup.find('ul', class_='content-list_tasks')
             list_tasks = tasks.find_all('li', class_='content-list__item')
             for task in list_tasks:
