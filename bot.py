@@ -3,7 +3,6 @@ import sqlite3
 import telebot
 from telebot import types
 
-
 bot = telebot.TeleBot('5892722843:AAFtxA1hpDSD4MRgXB0Epf26bxGmv6zJcDE')
 
 
@@ -15,7 +14,7 @@ def start(message):
     markup.add(subscribe_button)
     bot.send_message(message.from_user.id, "👋 Привет! Я отправляю новые заказы на хабр-фриланс", reply_markup=markup)
 
-@bot.message_handler(commands=['Подписаться'])
+@bot.message_handler(commands=['subscribe'])
 def subscribe(message):
     con = sqlite3.connect('users.db')
     cur = con.cursor()
@@ -29,7 +28,7 @@ def subscribe(message):
         bot.send_message(message.from_user.id, "Вы уже подписаны")
 
 
-@bot.message_handler(commands=['Отписаться'])
+@bot.message_handler(commands=['unsubscribe'])
 def unsubscribe(message):
     con = sqlite3.connect('users.db')
     cur = con.cursor()
@@ -37,8 +36,3 @@ def unsubscribe(message):
     con.commit()
     con.close()
     bot.send_message(message.from_user.id, "Вы успешно отписались")
-
-
-
-if __name__=="__main__":
-    bot.polling(none_stop=True, interval=0)
