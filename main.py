@@ -1,14 +1,20 @@
 # поиск в определённой зоне
+import os
 from time import sleep
 
 import requests as requests
 from bs4 import BeautifulSoup
 import sqlite3
-
 import telebot
+import os
+from dotenv import load_dotenv
 
-bot = telebot.TeleBot('5892722843:AAFtxA1hpDSD4MRgXB0Epf26bxGmv6zJcDE')
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
 
+
+bot = telebot.TeleBot(os.environ.get('BOT_KEY'))
 
 
 def send_last_order():

@@ -1,11 +1,19 @@
+import os
 import sqlite3
 
 import telebot
-from telebot import types
 
 from exceptions import NoSuchUserException
+import os
+from dotenv import load_dotenv
 
-bot = telebot.TeleBot('5892722843:AAFtxA1hpDSD4MRgXB0Epf26bxGmv6zJcDE')
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+
+
+
+bot = telebot.TeleBot(os.environ.get('BOT_KEY'))
 
 
 
