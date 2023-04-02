@@ -3,6 +3,8 @@ import sqlite3
 import telebot
 from telebot import types
 
+from exceptions import NoSuchUserException
+
 bot = telebot.TeleBot('5892722843:AAFtxA1hpDSD4MRgXB0Epf26bxGmv6zJcDE')
 
 
@@ -39,22 +41,29 @@ def unsubscribe(message):
 @bot.message_handler(commands=['add_url'])
 def add_url(message):
     try:
+        check_if_user_exists(message.from_user.id)
         url = message.text.split(' ')[1]
         add_url_to_db(url, message.from_user.id)
-    except:
+    except NoSuchUserException:
+        bot.send_message(message.from_user.id, "Вы не подписаны")
+    except IndexError:
         bot.reply_to(message, "Введите url")
         bot.register_next_step_handler(message, get_and_add_url)
-
 
 def get_and_add_url(message):
     url = message.text
     try:
         add_url_to_db(url, message.from_user.id)
         bot.send_message(message.from_user.id, "Если Вы правильно ввели урл, то вам будут приходить сообщения о новых заказах по выбранным категориям")
-    except:
+    except NoSuchUserException:
         bot.send_message(message.from_user.id, "Вы не подписаны")
 
-
+def check_if_user_exists(chat_id):
+    con = sqlite3.connect('users.db')
+    res = con.execute(f"SELECT * FROM users WHERE chat_id={chat_id}").fetchmany()
+    if not res:
+        raise NoSuchUserException
+    con.close()
 
 def add_url_to_db(url, chat_id):
     con = sqlite3.connect('users.db')
